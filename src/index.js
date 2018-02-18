@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 const {Display} = require('./display');
+const {Audio} = require('./audio');
 const {mouse, keys} = require('gocanvas');
 const noise = require('./perlin');
 
@@ -146,39 +147,32 @@ const createOscillatorBuffer = (audioCtx, freq, phase, amp, seconds) => {
 	}
 	
 	return myArrayBuffer;
-}
-
-const playBuffer = (audioCtx, buffer) => {
-	var source = audioCtx.createBufferSource();
-	source.buffer = buffer;
-	source.connect(audioCtx.destination);
-	source.start();
-}
+};
 
 noise.seed(321);
 
-var canvas = document.getElementById("display");
-var canvasWidth = canvas.width;
-var canvasHeight = canvas.height;
-var ctx = canvas.getContext("2d");
-var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-function drawPixel (x, y, r, g, b, a) {
-		var index = (x + y * canvasWidth) * 4;
-		canvasData.data[index + 0] = r;
-		canvasData.data[index + 1] = g;
-		canvasData.data[index + 2] = b;
-		canvasData.data[index + 3] = a;
-}
+// var canvas = document.getElementById("display");
+var canvas = document.querySelector("#wave-1 canvas");
 
 const totalSeconds = 2;
 var actx = new (window.AudioContext || window.webkitAudioContext)();
+const audio = new Audio(actx);
 
 getAudioData(actx, './A4.mp3').then(buffer => {
 	const mainDisplay = new Display(canvas);
 	const currRenderState = {tMin: 0.00, tMax: buffer.duration, yScale: 3}
 	mainDisplay.renderBuffer(buffer, currRenderState);
 
-	keys(document).subscribe(evt => {
+    const A4 = createOscillatorBuffer(actx, 440, 0, .2, buffer.duration);
+	const slot2 = document.querySelector('#wave-2 canvas');
+	const slot2Display = new Display(slot2);
+	slot2Display.renderBuffer(A4, {tMin: 0, tMax: .02});
+
+	document.querySelector('#play-reference').onclick = () => {
+        audio.play(buffer);
+    };
+
+    keys(document).subscribe(evt => {
 		const {key, dt, event} = evt;
 		const timeSpan = currRenderState.tMax - currRenderState.tMin;
 
@@ -228,11 +222,14 @@ getAudioData(actx, './A4.mp3').then(buffer => {
 				currRenderState.selectedtMin = t;
 			} break;
 			case 'release': {
-				currRenderState.tMin = currRenderState.selectedtMin;
-				currRenderState.tMax = t;
+				// prevents zooming in without there actually being a timeRange === 0
+				if(currRenderState.selectedtMin !== t) {
+                    currRenderState.tMin = currRenderState.selectedtMin;
+                    currRenderState.tMax = t;
 
-                delete currRenderState.selectedtMin;
-                delete currRenderState.selectedtMax;
+                    delete currRenderState.selectedtMin;
+                    delete currRenderState.selectedtMax;
+                }
 			} break;
 			default:
 				break;
@@ -240,7 +237,7 @@ getAudioData(actx, './A4.mp3').then(buffer => {
         mainDisplay.renderBuffer(buffer, currRenderState);
     });
 
-    playBuffer(actx, buffer);
+    audio.play(buffer);
 });
 
 const noisey = createNoiseBuffer(actx, totalSeconds);

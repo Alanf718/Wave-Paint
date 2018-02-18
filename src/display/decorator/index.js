@@ -22,6 +22,8 @@ export class Decorator {
         console.log(`\t${(iF-i0)} ${width/(iF-i0)}`);
         const ratio = width/(iF-i0);
 
+        // ratio 8 = full samples
+        // ratio 0.65 = 1 out of 8 samples
         if(ratio > 8) {
             ctx.strokeStyle='rgba(255, 0, 0, 1)';
             ctx.beginPath();
