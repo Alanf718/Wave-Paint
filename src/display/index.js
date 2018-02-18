@@ -1,5 +1,5 @@
 /* eslint-disable */
-const {mouse} = require('gocanvas');
+const {Decorator} = require('./decorator');
 
 export class Display {
     constructor(canvas) {
@@ -22,8 +22,12 @@ export class Display {
         const sTotal = iF - i0;
 
         let cursor = 0;
+        ctx.strokeStyle='rgba(0, 0, 0, 1)';
         ctx.beginPath();
-        console.log(i0, iF);
+
+        // dont draw lines for a certain width/timeSpan ratio
+
+        console.log(`timeSpan = ${tMax - tMin}    samples = ${iF-i0}     rate=${sampleRate}   ratio=${width/(tMax - tMin)}`);
         for (let i = i0; i < iF - 1; i++) {
             const x = floor(cursor*(width/sTotal));
             const y = floor((-nowBuffering[i])*height/2 * yScale + height/2);
@@ -40,6 +44,8 @@ export class Display {
         ctx.stroke();
 
         this._renderSelection(ctx, {tMin, tMax, selectedtMin, selectedtMax, width, height});
+
+        new Decorator(canvas).decorate(buffer, {tMin, tMax, yScale})
     }
 
     _renderSelection(ctx, {tMin, tMax, selectedtMin, selectedtMax, width, height}) {

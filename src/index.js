@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 const {Display} = require('./display');
-const {mouse} = require('gocanvas');
+const {mouse, keys} = require('gocanvas');
 const noise = require('./perlin');
 
 const createEmptyBuffer = (audioCtx, seconds) => {
@@ -178,7 +178,41 @@ getAudioData(actx, './A4.mp3').then(buffer => {
 	const currRenderState = {tMin: 0.00, tMax: buffer.duration, yScale: 3}
 	mainDisplay.renderBuffer(buffer, currRenderState);
 
-    // mouse(canvas).subscribe(evt => this.onMouseInput(evt, {tMin, tMax, width, height}));
+	keys(document).subscribe(evt => {
+		const {key, dt, event} = evt;
+		const timeSpan = currRenderState.tMax - currRenderState.tMin;
+
+		switch(key) {
+			case 'a': {
+				if(event === 'held') {
+					currRenderState.tMin -= dt * timeSpan;
+                    currRenderState.tMax -= dt * timeSpan;
+                }
+            } break;
+            case 'd': {
+                if(event === 'held') {
+                    currRenderState.tMin += dt * timeSpan;
+                    currRenderState.tMax += dt * timeSpan;
+                }
+            } break;
+            case 'w': {
+                if(event === 'held') {
+                    currRenderState.tMin += dt * timeSpan;
+                    currRenderState.tMax -= dt * timeSpan;
+                }
+            } break;
+            case 's': {
+                if(event === 'held') {
+                    currRenderState.tMin -= dt * timeSpan;
+                    currRenderState.tMax += dt * timeSpan;
+                }
+            } break;
+			default:
+				break;
+        };
+        mainDisplay.renderBuffer(buffer, currRenderState);
+	});
+
     mouse(canvas).subscribe(evt => {
 		const {type, pos} = evt;
 		const {width, height} = canvas;
