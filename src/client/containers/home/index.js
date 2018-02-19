@@ -2,20 +2,11 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {ActionCreators} from './actions/index';
-import {RegionSelector} from './components/region-selector';
-import {SelectedRegion} from './components/selected-region';
+import {WaveForm} from './components/wave-form';
+import {Oscillator} from './components/wave-form/oscillator';
+import {AudioIn} from './components/wave-form/audio-in';
 
 import './style.scss';
-/* eslint-disable no-unused-vars */
-const selected = {
-    regionSelected: [
-        {x: 0, y: 0},
-        {x: 32, y: 32}
-    ],
-    tags: []
-};
-/* eslint-enable */
-
 export class Home extends Component {
 
     constructor(props) {
@@ -26,12 +17,23 @@ export class Home extends Component {
     }
 
     render() {
-        // const {debug1} = this.props;
-
+        const {audio} = this.props;
         return (
-            <div className="frame-tags">
-                <RegionSelector/>
-                <SelectedRegion selected={['Im an array!']}/>
+            <div id="entry">
+                <WaveForm id="wave-ref"/>
+                <AudioIn
+                    audio={audio}
+                    id="wave-in-ref"
+                    url="./A4.mp3"/>
+                <Oscillator
+                    audio={audio}
+                    id="wave-osc-1"
+                    frequency={440}
+                    phase={0}
+                    amplitude={0.5}
+                    duration={2}/>
+                <button id="play-reference" onClick={this.props.debug1}>Play Reference</button>
+                <button id="play-output">Play Output</button>
             </div>
 
         );
@@ -39,7 +41,7 @@ export class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return { view: state };
+    return { audio: state.config.audio };
 };
 
 const mapDispatchToProps = (dispatch) => (bindActionCreators({...ActionCreators}, dispatch));

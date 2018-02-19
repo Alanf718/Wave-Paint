@@ -1,3 +1,22 @@
-#entry {
-  background-color: aliceblue;
+.wave-form {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid;
+  width: fit-content;
+  margin: 4px 0px;
+
+  input {
+    border: none;
+    background-color: transparent;
+    text-align: right;
+    width: 50px
+  }
+
+  .menu-bar {
+    padding: 4px;
+    background-color: antiquewhite;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 }

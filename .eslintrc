@@ -9,15 +9,14 @@
     // use ES6
     "es6": true
   },
-  // commented out sections for react
-  //  "ecmaProperties": {
-  //    // enable JSX support
-  //    "jsx": true
-  //  },
-  //  "plugins": [
-  //    // enable react plugin
-  //    "react"
-  //  ],
+//  "ecmaProperties": {
+//    // enable JSX support
+//    "jsx": true
+//  },
+  "plugins": [
+    // enable react plugin
+    "react"
+  ],
   "globals": {
     "__WEBPACK__": true
   },
@@ -114,21 +113,20 @@
     "space-infix-ops": 2,
     // complexity rules
     "max-depth": [2, 2],
-    "max-statements": [2, 8],
+    "max-statements": [1, 16],
     "complexity": [2, 5],
     "max-len": [2, 120],
     "max-params": [2, 2],
     // jsx rules
-    "jsx-quotes": 1
-//  ,
-//    "react/jsx-no-undef": 1,
-//    "react/jsx-uses-react": 1,
-//    "react/jsx-uses-vars": 1,
-//    "react/no-did-mount-set-state": 1,
-//    "react/no-did-update-set-state": 1,
-//    "react/no-multi-comp": 1,
-//    "react/react-in-jsx-scope": 1,
-//    "react/self-closing-comp": 1,
-//    "react/jsx-wrap-multilines": 1
+    "jsx-quotes": 1,
+    "react/jsx-no-undef": 1,
+    "react/jsx-uses-react": 1,
+    "react/jsx-uses-vars": 1,
+    "react/no-did-mount-set-state": 1,
+    "react/no-did-update-set-state": 1,
+    "react/no-multi-comp": 1,
+    "react/react-in-jsx-scope": 1,
+    "react/self-closing-comp": 1,
+    "react/jsx-wrap-multilines": 1
   }
 }

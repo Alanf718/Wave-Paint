@@ -4,85 +4,8 @@
     <meta charset="UTF-8">
     <title>Enter Title Here</title>
 </head>
-<style>
-    .wave-form {
-        display: flex;
-        flex-direction: column;
-        border: 2px solid;
-        width: fit-content;
-        margin: 4px 0px;
-    }
-    .wave-form input {
-        border: none;
-        background-color: transparent;
-        text-align: right;
-    }
-    .wave-form .freq {
-        width: 50px
-    }
-    .wave-form .phase {
-        width: 50px;
-    }
-
-    .menu-bar {
-        padding: 4px;
-        background-color: antiquewhite;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
-</style>
 <body>
-    <div id="entry">
-        <div class="wave-form audio-in" id="wave-1">
-            <div class="menu-bar">
-                <span class="label">AudioData (file://PianoA4.mp3) </span>
-                <span class="operation"><i>+</i></span>
-            </div>
-            <div>
-                <canvas width="800" width="300">
-            </div>
-            <div class="menu-bar">
-                <span class="freq">440hz</span>
-                <span class="phase">45°</span>
-            </div>
-        </div>
-        <div class="wave-form oscillator" id="wave-2">
-            <div class="menu-bar">
-                <span class="label">Oscillator</span>
-                <span class="operation"><i>*</i></span>
-            </div>
-            <div>
-                <canvas width="800" width="300">
-            </div>
-            <div class="menu-bar">
-                <!--<span class="freq">440hz</span>-->
-                <span>
-                    <input class="freq" type="number">
-                    <span>&nbsp;hz</span>
-                </span>
-                <span>
-                    <input class="amplitude" type="number" min="0" max="100">
-                    <span>&nbsp;%</span>
-                </span>
-                <span>
-                    <input class="phase" type="number" min="0" max="360" list="common-phase-numbers">
-                    <span>&nbsp;°</span>
-                </span>
-
-                <datalist id="common-phase-numbers">
-                    <option value="0"/>
-                    <option value="90"/>
-                    <option value="180"/>
-                    <option value="270"/>
-                </datalist>
-                <!--<span class="phase">45°</span>-->
-            </div>
-        </div>
-
-
-        <button id="play-reference">Play Reference</button>
-        <button id="play-output">Play Output</button>
+    <div id="app">
     </div>
 </body>
 </html>

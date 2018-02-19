@@ -19,7 +19,6 @@ export class Decorator {
         const sTotal = iF - i0;
 
         let cursor = 0;
-        console.log(`\t${(iF-i0)} ${width/(iF-i0)}`);
         const ratio = width/(iF-i0);
 
         // ratio 8 = full samples

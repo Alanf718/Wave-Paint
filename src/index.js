@@ -9,26 +9,26 @@ const createEmptyBuffer = (audioCtx, seconds) => {
 	return audioCtx.createBuffer(1, audioCtx.sampleRate * seconds, audioCtx.sampleRate);
 };
 
-const getAudioData = (ac, url) => {
-  var request = new XMLHttpRequest();
-  request.open('GET', url, true);
-  request.responseType = 'arraybuffer';
-
-	return new Promise((resolve, reject) => {
-		request.onload = function() {
-			var audioData = request.response;
-			ac.decodeAudioData(audioData)
-				.then((buffer) => {
-					resolve(buffer);
-				})
-				.catch( e => {
-					reject(e.err);
-				});
-		}
-
-		request.send();
-	});
-};
+// const getAudioData = (ac, url) => {
+//   var request = new XMLHttpRequest();
+//   request.open('GET', url, true);
+//   request.responseType = 'arraybuffer';
+//
+// 	return new Promise((resolve, reject) => {
+// 		request.onload = function() {
+// 			var audioData = request.response;
+// 			ac.decodeAudioData(audioData)
+// 				.then((buffer) => {
+// 					resolve(buffer);
+// 				})
+// 				.catch( e => {
+// 					reject(e.err);
+// 				});
+// 		}
+//
+// 		request.send();
+// 	});
+// };
 /** must have same number of channels, samplerate, and length */
 const sum = (audioCtx, buffer1, buffer2) => {
 	const totalSeconds = buffer1.duration;
@@ -158,9 +158,9 @@ const totalSeconds = 2;
 var actx = new (window.AudioContext || window.webkitAudioContext)();
 const audio = new Audio(actx);
 
-getAudioData(actx, './A4.mp3').then(buffer => {
+audio.load('./A4.mp3').then(buffer => {
 	const mainDisplay = new Display(canvas);
-	const currRenderState = {tMin: 0.00, tMax: buffer.duration, yScale: 3}
+	const currRenderState = {tMin: 0.00, tMax: buffer.duration, yScale: 3};
 	mainDisplay.renderBuffer(buffer, currRenderState);
 
     const A4 = createOscillatorBuffer(actx, 440, 0, .2, buffer.duration);

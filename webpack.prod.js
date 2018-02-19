@@ -47,6 +47,7 @@ const prepend = function(extensions, args) {
 const baseConfig = () => {
     const config = {};
 
+    ENV = 'prebuild';
     var isTestEnv = ENV === 'test' || ENV === 'test-watch';
 
     /**
@@ -80,8 +81,8 @@ const baseConfig = () => {
     config.output = {
         path: root('dist'),
         publicPath: '/',
-        filename: ENV === 'prebuild' ? 'js/[name].[hash].js' : 'js/[name].js',
-        chunkFilename: ENV === 'prebuild' ? '[id].[hash].chunk.js' : '[id].chunk.js'
+        filename: 'js/[name].js',
+        chunkFilename:  '[id].chunk.js'
     };
 
 
@@ -114,14 +115,12 @@ const baseConfig = () => {
             {
                 // I combined the two, because why not?
                 test: /\.(css|scss)$/,
-                use: [{loader: 'style-loader', query: {sourceMap: ENV !== 'prebuild'}},
-                    {loader: 'css-loader', query: {sourceMap: ENV !== 'prebuild'}},
-                    {loader: 'postcss-loader', query: {sourceMap: ENV !== 'prebuild'}},
+                use: [{loader: 'style-loader'},
+                    {loader: 'css-loader'},
+                    {loader: 'postcss-loader'},
                     {
                         loader: 'sass-loader',
-                        options: {
-                            sourceMap: ENV !== 'prebuild'
-                        },
+                        options: {},
                     }]
             },
             isTestEnv ? {} : {
@@ -141,8 +140,7 @@ const baseConfig = () => {
                             presets: [
                                 'es2015',
                                 'stage-2',
-                                'react',
-                                'react-hmre'
+                                'react'
                             ]
                         }
                     }],
@@ -166,18 +164,19 @@ const baseConfig = () => {
             // Environment helpers
             'process.env': {
                 ENV: JSON.stringify(ENV),
-                NODE_ENV: JSON.stringify(ENV === 'prebuild' ? 'production' : 'development')
+                NODE_ENV: JSON.stringify('production'),
             }
         }),
-        new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: JSON.stringify("production")
-            }
-        }),
+        // new webpack.DefinePlugin({
+        //     "process.env": {
+        //         NODE_ENV: JSON.stringify("production")
+        //     }
+        // }),
 
         // new webpack.optimize.DedupePlugin(), //dedupe similar code
         new webpack.optimize.UglifyJsPlugin(), //minify everything
         // new webpack.optimize.AggressiveMergingPlugin(), //Merge chunks
+
 
         new webpack.SourceMapDevToolPlugin({
             filename: '[file].js.map'
@@ -207,12 +206,12 @@ const baseConfig = () => {
             // Reference: https://webpack.github.io/docs/list-of-plugins.html#commonschunkplugin
             new webpack.optimize.CommonsChunkPlugin({
                 name: 'vendor',
-                filename: ENV === 'prebuild' ? 'js/[name].[hash].js' : 'js/[name].js',
+                filename: 'js/[name].js',
                 minChunks: Infinity
             }),
             new webpack.optimize.CommonsChunkPlugin({
                 name: 'common',
-                filename: ENV === 'prebuild' ? 'js/[name].[hash].js' : 'js/[name].js',
+                filename: 'js/[name].js',
                 minChunks: 2,
                 chunks: ['app', 'vendor']
             }),
@@ -258,80 +257,36 @@ const baseConfig = () => {
         );
     }
 
-    // Add build specific plugins
-    if (ENV === 'prebuild') {
-        config.plugins.push(
-            // Reference: http://webpack.github.io/docs/list-of-plugins.html#noerrorsplugin
-            // Only emit files when there are no errors
-            new webpack.NoEmitOnErrorsPlugin(),
-
-            // Reference: http://webpack.github.io/docs/list-of-plugins.html#dedupeplugin
-            // Dedupe modules in the output
-            // new webpack.optimize.DedupePlugin(), // removed from webpack
-
-            // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
-            // Minify all javascript, switch loaders to minimizing mode
-            new webpack.optimize.UglifyJsPlugin({
-                // to debug prod builds uncomment //debug lines and comment //prod lines
-
-                // beautify: true,//debug
-                // mangle: false,//debug
-                // dead_code: false,//debug
-                // unused: false,//debug
-                // deadCode: false,//debug
-                // compress : {
-                //      screw_ie8 : true, keep_fnames: true, drop_debugger: false, dead_code: false, unused: false,
-                // }, // debug
-                // comments: true,//debug
-
-                beautify: false, // prod
-                mangle: {
-                    screw_ie8: true,
-                    except: ['RouterLink'] // needed for uglify RouterLink problem
-                }, // prod
-                compress: {screw_ie8: true}, // prod
-                comments: false, // prod,
-                sourceMap: true
-            }),
-
-            // Copy assets from the public folder
-            // Reference: https://github.com/kevlened/copy-webpack-plugin
-            new CopyWebpackPlugin([{
-                from: root('public')
-            }])
-        );
-    }
-
     config.stats = {
         warnings: false
     };
 
-    config.devServer = {
-        port: hotMiddleWarePort,
-        contentBase: './public',
-        historyApiFallback: true,
-        stats: 'minimal', // none (or false), errors-only, minimal, normal (or true) and verbose
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-            "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
-        },
-        proxy: [
-            {
-                path: '/assets/common-styles.css',
-                target: `http://localhost:3001`,
-                secure: false,
-                //changeOrigin: true
-            },
-            {
-                path: '/api/login',
-                pathRewrite: {'^/api/login': '/api/login/v2'},
-                target: `http://localhost:3002`,
-                secure: false,
-                //changeOrigin: true
-            }
-        ]
-    };
+    // config.devServer = {
+    //     port: hotMiddleWarePort,
+    //     contentBase: './public',
+    //     historyApiFallback: true,
+    //     stats: 'minimal', // none (or false), errors-only, minimal, normal (or true) and verbose
+    //     headers: {
+    //         "Access-Control-Allow-Origin": "*",
+    //         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+    //         "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+    //     },
+    //     proxy: [
+    //         {
+    //             path: '/assets/common-styles.css',
+    //             target: `http://localhost:3001`,
+    //             secure: false,
+    //             //changeOrigin: true
+    //         },
+    //         {
+    //             path: '/api/login',
+    //             pathRewrite: {'^/api/login': '/api/login/v2'},
+    //             target: `http://localhost:3002`,
+    //             secure: false,
+    //             //changeOrigin: true
+    //         }
+    //     ]
+    // };
 
     return config;
 };
