@@ -1,0 +1,13 @@
+.frame-tags {
+  display: flex;
+  flex-direction: row;
+  div {
+    margin: 4px;
+  }
+}
+
+div.display {
+  canvas {
+    border: 1px solid;
+  }
+}

@@ -1,5 +1,5 @@
 /* eslint-disable */
-const {Decorator} = require('./decorator');
+const {Decorator} = require('./decorator/index');
 
 export class Display {
     constructor(canvas) {

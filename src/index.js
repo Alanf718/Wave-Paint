@@ -1,7 +1,7 @@
 /* eslint-disable */
 
-const {Display} = require('./display');
-const {Audio} = require('./audio');
+const {Display} = require('./wave/display');
+const {Audio} = require('./wave/audio');
 const {mouse, keys} = require('gocanvas');
 const noise = require('./perlin');
 
@@ -171,6 +171,11 @@ getAudioData(actx, './A4.mp3').then(buffer => {
 	document.querySelector('#play-reference').onclick = () => {
         audio.play(buffer);
     };
+
+    document.querySelector('#play-output').onclick = () => {
+        audio.play(A4);
+    };
+
 
     keys(document).subscribe(evt => {
 		const {key, dt, event} = evt;

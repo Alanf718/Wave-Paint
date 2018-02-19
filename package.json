@@ -54,6 +54,13 @@
     "webpack-merge": "4.1.1"
   },
   "dependencies": {
-    "gocanvas": "git://github.com/alanf718/GoCanvas.git"
+    "gocanvas": "git://github.com/alanf718/GoCanvas.git",
+    "react": "16.2.0",
+    "react-dom": "16.2.0",
+    "react-redux": "5.0.6",
+    "react-router": "3.2.0",
+    "react-router-dom": "4.2.2",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "redux": "3.7.2"
   }
 }
