@@ -11,7 +11,10 @@ export const config = (state = {}, {type, payload} = {}) => {
     // @todo this might make more sense to move to the home reducer
     case 'LOADAUDIO': {
         const {audio} = state;
-        return {audio, refAudio: payload};
+        return {audio, refAudio: payload, window: {tMin: 0, tMax: payload.duration}};
+    }
+    case 'WINDOW': {
+        return {...state, window: {...payload}};
     }
     default:
         return state;

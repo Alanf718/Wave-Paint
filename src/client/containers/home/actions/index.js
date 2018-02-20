@@ -5,7 +5,7 @@ export const Actions = {
 };
 
 export const ActionCreators = {
-    window: ({tMin, tMax}) => ({
+    windowing: ({tMin, tMax}) => ({
         type: Actions.WINDOW,
         payload: {tMin, tMax}
     }),

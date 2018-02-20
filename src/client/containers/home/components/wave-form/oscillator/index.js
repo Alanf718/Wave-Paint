@@ -13,26 +13,26 @@ export class Oscillator extends Component {
         audio.play(buffer);
     }
 
-    componentDidMount() {
-        const {frequency, amplitude, phase, audio, duration} = this.props;
+    displayWaveform() {
+        const {frequency, amplitude, phase, audio, duration, window} = this.props;
 
         if(!this.buffer) {
             const osc = audio.createOscillator({frequency, amplitude, phase, duration});
             this.buffer = osc;
             const display = new Display(this.refs.canvas);
-            display.renderBuffer(osc, {tMin: 0, tMax: 0.01});
+            display.renderBuffer(osc, window);
+        } else {
+            const display = new Display(this.refs.canvas);
+            display.renderBuffer(this.buffer, window);
         }
     }
 
-    componentDidUpdate() {
-        const {frequency, amplitude, phase, audio, duration} = this.props;
+    componentDidMount() {
+        this.displayWaveform();
+    }
 
-        if(!this.buffer) {
-            const osc = audio.createOscillator({frequency, amplitude, phase, duration});
-            this.buffer = osc;
-            const display = new Display(this.refs.canvas);
-            display.renderBuffer(osc, {tMin: 0, tMax: 0.01});
-        }
+    componentDidUpdate() {
+        this.displayWaveform();
     }
 
     render() {

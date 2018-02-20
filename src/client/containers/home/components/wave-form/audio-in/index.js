@@ -13,21 +13,21 @@ export class AudioIn extends Component {
         audio.play(refAudio);
     }
 
-    loadAndDisplay() {
-        const {refAudio} = this.props;
+    displayWaveform() {
+        const {refAudio, window} = this.props;
 
         if(refAudio) {
             const display = new Display(this.refs.canvas);
-            display.renderBuffer(refAudio, {tMin: 0.03, tMax: 0.05});
+            display.renderBuffer(refAudio, window);
         }
     }
 
     componentDidMount() {
-        this.loadAndDisplay();
+        this.displayWaveform();
     }
 
     componentDidUpdate() {
-        this.loadAndDisplay();
+        this.displayWaveform();
     }
 
     render() {
