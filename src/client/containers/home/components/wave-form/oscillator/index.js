@@ -36,10 +36,10 @@ export class Oscillator extends Component {
     }
 
     render() {
-        const {frequency, amplitude, phase, id} = this.props;
+        const {frequency, amplitude, phase, slot} = this.props;
 
         return (
-            <div className="wave-form oscillator" id={id}>
+            <div className="wave-form oscillator" id={`waveform-${slot}`}>
                 <div className="menu-bar">
                     <span className="label">Oscillator</span>
                     <span className="operation"><i>*</i></span>

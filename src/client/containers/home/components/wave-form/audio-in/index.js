@@ -9,19 +9,16 @@ export class AudioIn extends Component {
     }
 
     playBuffer() {
-        const {props: {audio}, buffer} = this;
-        audio.play(buffer);
+        const {audio, refAudio} = this.props;
+        audio.play(refAudio);
     }
 
     loadAndDisplay() {
-        const {audio, url} = this.props;
+        const {refAudio} = this.props;
 
-        if(!this.buffer) {
-            audio.load(url).then(buffer => {
-                this.buffer = buffer;
-                const display = new Display(this.refs.canvas);
-                display.renderBuffer(buffer, {tMin: 0.03, tMax: 0.05});
-            });
+        if(refAudio) {
+            const display = new Display(this.refs.canvas);
+            display.renderBuffer(refAudio, {tMin: 0.03, tMax: 0.05});
         }
     }
 
