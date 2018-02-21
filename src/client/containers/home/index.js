@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {ActionCreators} from './actions/index';
+import {ActionCreators as homeActions} from './actions/index';
+import {ActionCreators as waveActions} from './components/wave-form/actions';
 import {WaveForm} from './components/wave-form';
 import {Oscillator} from './components/wave-form/oscillator';
 import {AudioIn} from './components/wave-form/audio-in';
@@ -73,12 +74,12 @@ export class Home extends Component {
     }
 
     componentWillUnmount() {
-        this.mouseSubscription.unsubscribe();
+        // this.mouseSubscription.unsubscribe();
         this.keySubscription.unsubscribe();
     }
 
     render() {
-        const {config: {audio, refAudio, window}, loadAudio} = this.props;
+        const {config: {audio, refAudio, window}, slots, loadAudio, update, add} = this.props;
 
         if(!refAudio) {
             loadAudio(audio, './A4.mp3');
@@ -100,15 +101,35 @@ export class Home extends Component {
                     url="./A4.mp3"
                     window={window}
                 />
-                <Oscillator
-                    audio={audio}
-                    slot={1}
-                    frequency={440}
-                    phase={0}
-                    amplitude={0.125}
-                    duration={duration}
-                    window={window}
-                />
+                {
+                    slots.map(({type, params}, i) => {
+                        if(type === 'osc') {
+                            return (
+                                <Oscillator
+                                    audio={audio}
+                                    slot={i}
+                                    key={i}
+                                    frequency={params.frequency}
+                                    overtone={params.overtone}
+                                    phase={params.phase}
+                                    amplitude={params.amplitude}
+                                    duration={duration}
+                                    window={window}
+                                    update={update}/>
+                            );
+                        }
+
+                        return (
+                            <div>
+                                Unknown Slot Type
+                            </div>
+                        );
+                    })
+                }
+                <button id="add-waveform"
+                    onClick={() => add({frequency: 440, overtone: 0, phase: 0, amplitude: 0.125})}>
+                    Add Oscillator
+                </button>
                 <button id="play-reference">Play Reference</button>
                 <button id="play-output">Play Output</button>
             </div>
@@ -121,6 +142,9 @@ const mapStateToProps = (state) => {
     return {...state};
 };
 
-const mapDispatchToProps = (dispatch) => (bindActionCreators({...ActionCreators}, dispatch));
+const mapDispatchToProps = (dispatch) => (bindActionCreators({
+    ...homeActions,
+    ...waveActions,
+}, dispatch));
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
