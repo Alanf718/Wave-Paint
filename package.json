@@ -61,7 +61,9 @@
     "webpack-merge": "4.1.1"
   },
   "dependencies": {
+    "express": "4.16.2",
     "gocanvas": "git://github.com/alanf718/GoCanvas.git",
+    "history": "4.7.2",
     "react": "16.2.0",
     "react-dom": "16.2.0",
     "react-redux": "5.0.6",
@@ -69,7 +71,6 @@
     "react-router-dom": "4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
     "redux": "3.7.2",
-    "express": "4.16.2",
-    "history": "4.7.2"
+    "redux-promise": "^0.5.3"
   }
 }

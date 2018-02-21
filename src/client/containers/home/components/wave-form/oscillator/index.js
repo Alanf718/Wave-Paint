@@ -8,28 +8,38 @@ export class Oscillator extends Component {
         super(props);
     }
 
-    componentDidMount() {
-        const {frequency, amplitude, phase, audio, duration} = this.props;
+    playBuffer() {
+        const {props: {audio}, buffer} = this;
+        audio.play(buffer);
+    }
 
-        const osc = audio.createOscillator({frequency, amplitude, phase, duration});
-        const display = new Display(this.refs.canvas);
-        display.renderBuffer(osc, {tMin: 0, tMax: 0.01});
-        // audio.play(osc);
+    displayWaveform() {
+        const {frequency, amplitude, phase, audio, duration, window} = this.props;
+
+        if(!this.buffer) {
+            const osc = audio.createOscillator({frequency, amplitude, phase, duration});
+            this.buffer = osc;
+            const display = new Display(this.refs.canvas);
+            display.renderBuffer(osc, window);
+        } else {
+            const display = new Display(this.refs.canvas);
+            display.renderBuffer(this.buffer, window);
+        }
+    }
+
+    componentDidMount() {
+        this.displayWaveform();
     }
 
     componentDidUpdate() {
-        const {frequency, amplitude, phase, audio, duration} = this.props;
-
-        const osc = audio.createOscillator({frequency, amplitude, phase, duration});
-        const display = new Display(this.refs.canvas);
-        display.renderBuffer(osc, {tMin: 0, tMax: 0.01});
+        this.displayWaveform();
     }
 
     render() {
-        const {frequency, amplitude, phase, id} = this.props;
+        const {frequency, amplitude, phase, slot} = this.props;
 
         return (
-            <div className="wave-form oscillator" id={id}>
+            <div className="wave-form oscillator" id={`waveform-${slot}`}>
                 <div className="menu-bar">
                     <span className="label">Oscillator</span>
                     <span className="operation"><i>*</i></span>
@@ -38,6 +48,7 @@ export class Oscillator extends Component {
                     <canvas width="800" height="150" ref="canvas"/>
                 </div>
                 <div className="menu-bar">
+                    <button onClick={() => {this.playBuffer();}}>play</button>
                     <span>
                         <input className="freq" type="number" defaultValue={frequency}/>
                         <span>&nbsp;hz</span>
@@ -56,13 +67,6 @@ export class Oscillator extends Component {
                             defaultValue={phase}/>
                         <span>&nbsp;°</span>
                     </span>
-
-                    <datalist id="common-phase-numbers">
-                        <option value="0"/>
-                        <option value="90"/>
-                        <option value="180"/>
-                        <option value="270"/>
-                    </datalist>
                 </div>
             </div>
         );
