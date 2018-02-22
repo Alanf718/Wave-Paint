@@ -61,21 +61,26 @@ export class Home extends Component {
 
     componentDidMount() {
         this.keySubscription = keys(document).subscribe(evt => this.onInput(evt));
-        // this.mouseSubscription = mouse(document).subscribe(console.log);
     }
-
-    // called on any updated renders
-    componentDidUpdate() {
-        /* this is causing issues to unsubscribe and resubscribe on component update */
-        // this.mouseSubscription.unsubscribe();
-        // this.keySubscription.unsubscribe();
-        // this.keySubscription = keys(document).subscribe(evt => this.onInput(evt));
-        // this.mouseSubscription = mouse(document).subscribe(console.log);
-    }
-
     componentWillUnmount() {
-        // this.mouseSubscription.unsubscribe();
         this.keySubscription.unsubscribe();
+    }
+
+    playOutput() {
+        const {config: {audio, refAudio}, slots} = this.props;
+        const duration = refAudio.duration;
+
+        const output = slots.reduce((acc, slot) => {
+            const {params: {frequency, overtone, phase, amplitude}, type} = slot;
+            if(type === 'osc') {
+                const osc = audio.createOscillator({frequency: frequency * (overtone + 1), amplitude, phase, duration});
+                return audio.sum({buffer1: acc, buffer2: osc});
+            }
+            return acc;
+        }, audio.createEmpty({duration}));
+
+        audio.play(output);
+
     }
 
     render() {
@@ -130,8 +135,7 @@ export class Home extends Component {
                     onClick={() => add({frequency: 440, overtone: 0, phase: 0, amplitude: 0.125})}>
                     Add Oscillator
                 </button>
-                <button id="play-reference">Play Reference</button>
-                <button id="play-output">Play Output</button>
+                <button id="play-output" onClick={() => this.playOutput()}>Play Output</button>
             </div>
 
         );

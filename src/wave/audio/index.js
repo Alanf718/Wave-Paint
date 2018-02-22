@@ -3,6 +3,11 @@ export class Audio {
         this.actx = audioCtx;
     }
 
+    createEmpty({duration}) {
+        const {actx, actx: {sampleRate}} = this;
+        return actx.createBuffer(1, sampleRate * duration, sampleRate);
+    }
+
     load(url) {
         const {actx} = this;
         var request = new XMLHttpRequest();
@@ -33,9 +38,45 @@ export class Audio {
         source.start();
     }
 
+    sum({buffer1, buffer2}) {
+        const totalSeconds = buffer1.duration;
+        const sum = this.createEmpty({duration: totalSeconds});
+
+        for (let channel = 0; channel < buffer1.numberOfChannels; channel++) {
+            const sumBuffering = sum.getChannelData(channel);
+            var nowBuffering1 = buffer1.getChannelData(channel);
+            var nowBuffering2 = buffer2.getChannelData(channel);
+            for (let i = 0; i < sumBuffering.length; i++) {
+                sumBuffering[i] = nowBuffering1[i] + nowBuffering2[i];
+            }
+        }
+
+        return sum;
+    }
+
+    /*
+    product({buffer1, buffer2}) {
+        const {actx} = this;
+        const totalSeconds = buffer1.duration;
+        const sum = createEmptyBuffer(actx, totalSeconds);
+
+        for (let channel = 0; channel < buffer1.numberOfChannels; channel++) {
+            const sumBuffering = sum.getChannelData(channel);
+            var nowBuffering1 = buffer1.getChannelData(channel);
+            var nowBuffering2 = buffer2.getChannelData(channel);
+            for (let i = 0; i < sumBuffering.length; i++) {
+                sumBuffering[i] = nowBuffering1[i] * nowBuffering2[i];
+            }
+        }
+
+        return sum;
+    }
+    */
+
     createOscillator({frequency, phase, amplitude, duration}) {
         const {actx} = this;
-        let myArrayBuffer = actx.createBuffer(1, actx.sampleRate * duration, actx.sampleRate);
+        // let myArrayBuffer = actx.createBuffer(1, actx.sampleRate * duration, actx.sampleRate);
+        let myArrayBuffer = this.createEmpty({duration});
         const sampleRate = 1 / actx.sampleRate;
 
         for (let channel = 0; channel < myArrayBuffer.numberOfChannels; channel++) {
