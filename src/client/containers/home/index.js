@@ -6,6 +6,7 @@ import {ActionCreators as waveActions} from './components/wave-form/actions';
 import {WaveForm} from './components/wave-form';
 import {Oscillator} from './components/wave-form/oscillator';
 import {AudioIn} from './components/wave-form/audio-in';
+import {Output} from './components/wave-form/output';
 import {/*mouse,*/ keys} from 'gocanvas';
 
 import './style.scss';
@@ -66,23 +67,6 @@ export class Home extends Component {
         this.keySubscription.unsubscribe();
     }
 
-    playOutput() {
-        const {config: {audio, refAudio}, slots} = this.props;
-        const duration = refAudio.duration;
-
-        const output = slots.reduce((acc, slot) => {
-            const {params: {frequency, overtone, phase, amplitude}, type} = slot;
-            if(type === 'osc') {
-                const osc = audio.createOscillator({frequency: frequency * (overtone + 1), amplitude, phase, duration});
-                return audio.sum({buffer1: acc, buffer2: osc});
-            }
-            return acc;
-        }, audio.createEmpty({duration}));
-
-        audio.play(output);
-
-    }
-
     render() {
         const {config: {audio, refAudio, window}, slots, loadAudio, update, add} = this.props;
 
@@ -131,11 +115,15 @@ export class Home extends Component {
                         );
                     })
                 }
+                <Output
+                    audio={audio}
+                    slots={slots}
+                    duration={duration}
+                    window={window}/>
                 <button id="add-waveform"
                     onClick={() => add({frequency: 440, overtone: 0, phase: 0, amplitude: 0.125})}>
                     Add Oscillator
                 </button>
-                <button id="play-output" onClick={() => this.playOutput()}>Play Output</button>
             </div>
 
         );

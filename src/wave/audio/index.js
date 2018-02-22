@@ -54,11 +54,9 @@ export class Audio {
         return sum;
     }
 
-    /*
     product({buffer1, buffer2}) {
-        const {actx} = this;
         const totalSeconds = buffer1.duration;
-        const sum = createEmptyBuffer(actx, totalSeconds);
+        const sum = this.createEmpty({duration: totalSeconds});
 
         for (let channel = 0; channel < buffer1.numberOfChannels; channel++) {
             const sumBuffering = sum.getChannelData(channel);
@@ -71,11 +69,9 @@ export class Audio {
 
         return sum;
     }
-    */
 
     createOscillator({frequency, phase, amplitude, duration}) {
         const {actx} = this;
-        // let myArrayBuffer = actx.createBuffer(1, actx.sampleRate * duration, actx.sampleRate);
         let myArrayBuffer = this.createEmpty({duration});
         const sampleRate = 1 / actx.sampleRate;
 
