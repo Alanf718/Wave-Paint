@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 import {Audio} from '../../wave/audio';
+import {slots} from '../containers/home/reducers';
 
 export const config = (state = {}, {type, payload} = {}) => {
     switch (type) {
@@ -22,7 +23,8 @@ export const config = (state = {}, {type, payload} = {}) => {
 };
 
 const rootReducer = combineReducers({
-    config
+    config,
+    slots
 });
 
 export default rootReducer;
