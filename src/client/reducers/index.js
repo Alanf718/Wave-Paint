@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 import {Audio} from '../../wave/audio';
-import {slots} from '../containers/home/reducers';
+import {slots} from './slots';
 
 export const config = (state = {}, {type, payload} = {}) => {
     switch (type) {

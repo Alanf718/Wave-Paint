@@ -1,4 +1,4 @@
-import {Actions} from '../components/wave-form/actions';
+import {Actions} from '../../containers/home/components/wave-form/actions/index';
 
 const defaultSlots = [{
     type: 'osc',
