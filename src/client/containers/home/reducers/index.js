@@ -8,6 +8,9 @@ const defaultSlots = [{
         phase: 0,
         amplitude: 0.125
     }
+}, {
+    type: 'env',
+    params: {}
 }];
 
 export const slots = (state = defaultSlots, {type, payload} = {}) => {

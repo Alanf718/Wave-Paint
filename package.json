@@ -61,6 +61,7 @@
     "webpack-merge": "4.1.1"
   },
   "dependencies": {
+    "d3": "4.13.0",
     "express": "4.16.2",
     "gocanvas": "git://github.com/alanf718/GoCanvas.git",
     "history": "4.7.2",

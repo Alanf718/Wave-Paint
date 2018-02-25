@@ -70,7 +70,35 @@ export class Audio {
         return sum;
     }
 
+    /**
+     * @param {float} frequency Oscillator Frequency
+     * @param {float} phase Oscillator phase in degrees
+     * @param {float} amplitude Oscillator amplitude [0, 1]
+     * @param {float} duration Oscillator duration in seconds
+     * @returns {AudioBuffer} audio buffer
+     */
     createOscillator({frequency, phase, amplitude, duration}) {
+        const {actx} = this;
+        let myArrayBuffer = this.createEmpty({duration});
+        const sampleRate = 1 / actx.sampleRate;
+        const PI2 = Math.PI * 2;
+
+        for (let channel = 0; channel < myArrayBuffer.numberOfChannels; channel++) {
+
+            let nowBuffering = myArrayBuffer.getChannelData(channel);
+            for (let i = 0; i < myArrayBuffer.length; i++) {
+                const t = i * sampleRate * PI2;
+                const sample = Math.sin(t * frequency + (phase * PI2 / 360)) * amplitude;
+                nowBuffering[i] = sample;
+            }
+        }
+
+        return myArrayBuffer;
+    }
+
+    /* eslint-disable */
+    // @todo make this robust instead of static amplitude
+    createEnvelope({duration, attack, decay, release, sustain}) {
         const {actx} = this;
         let myArrayBuffer = this.createEmpty({duration});
         const sampleRate = 1 / actx.sampleRate;
@@ -78,11 +106,32 @@ export class Audio {
         for (let channel = 0; channel < myArrayBuffer.numberOfChannels; channel++) {
 
             let nowBuffering = myArrayBuffer.getChannelData(channel);
-            for (let i = 0; i < myArrayBuffer.length; i++) {
-                const t = i * sampleRate * Math.PI * 2;
-                const sample = Math.sin(t * frequency + phase) * amplitude;
+            let i = 0;
+            const attackEnd = Math.floor(myArrayBuffer.length * attack);
+            const decayEnd = Math.floor(myArrayBuffer.length * decay);
+            const releaseEnd = Math.floor(myArrayBuffer.length * release);
+            const sustainEnd = Math.floor(myArrayBuffer.length * sustain);
+            for (; i < attackEnd; i++) {
+                const t = i * sampleRate;
+                // const sample = Math.sin(t * frequency + (phase * PI2 / 360)) * amplitude;
                 nowBuffering[i] = sample;
             }
+            for (; i < decayEnd; i++) {
+                const t = i * sampleRate;
+                // const sample = Math.sin(t * frequency + (phase * PI2 / 360)) * amplitude;
+                nowBuffering[i] = sample;
+            }
+            for (; i < releaseEnd; i++) {
+                const t = i * sampleRate;
+                // const sample = Math.sin(t * frequency + (phase * PI2 / 360)) * amplitude;
+                nowBuffering[i] = sample;
+            }
+            for (; i < sustainEnd; i++) {
+                const t = i * sampleRate;
+                // const sample = Math.sin(t * frequency + (phase * PI2 / 360)) * amplitude;
+                nowBuffering[i] = sample;
+            }
+
         }
 
         return myArrayBuffer;

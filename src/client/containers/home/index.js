@@ -7,6 +7,7 @@ import {WaveForm} from './components/wave-form';
 import {Oscillator} from './components/wave-form/oscillator';
 import {AudioIn} from './components/wave-form/audio-in';
 import {Output} from './components/wave-form/output';
+import {Envelope} from './components/wave-form/envelope/index';
 import {/*mouse,*/ keys} from 'gocanvas';
 
 import './style.scss';
@@ -105,6 +106,20 @@ export class Home extends Component {
                                     duration={duration}
                                     window={window}
                                     update={update}/>
+                            );
+                        } else if(type === 'env') {
+                            return (
+                                <Envelope
+                                    audio={audio}
+                                    slot={i}
+                                    key={i}
+                                    window={window}
+                                    update={update}
+                                    attack={{x: 0.3, y: 1}}
+                                    decay={{x: 0.4, y: 0.5}}
+                                    release={{x: 0.9, y: 0.5}}
+                                    sustain={{x: 1, y: 0}}
+                                />
                             );
                         }
 

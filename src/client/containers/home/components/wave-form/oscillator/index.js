@@ -37,7 +37,7 @@ export class Oscillator extends Component {
             <div className="wave-form oscillator" id={`waveform-${slot}`}>
                 <div className="menu-bar">
                     <span className="label">Oscillator</span>
-                    <span className="operation"><i>*</i></span>
+                    <span className="operation"><i>+</i></span>
                 </div>
                 <div>
                     <canvas width="800" height="150" ref="canvas"/>
