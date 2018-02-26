@@ -1,6 +1,7 @@
 export const Actions = {
     UPDATEWAVEFORM: 'UPDATE-WAVEFORM',
-    ADDWAVEFORM: 'ADD-WAVEFORM'
+    ADDWAVEFORM: 'ADD-WAVEFORM',
+    EXPANDWAVEFORM: 'EXPAND-WAVEFORM'
 };
 
 export const ActionCreators = {
@@ -11,5 +12,9 @@ export const ActionCreators = {
     add: ({...rest}) => ({
         type: Actions.ADDWAVEFORM,
         payload: {...rest}
+    }),
+    expand: ({slot, expanded}) => ({
+        type: Actions.EXPANDWAVEFORM,
+        payload: {slot, expanded}
     })
 };

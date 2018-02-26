@@ -69,7 +69,7 @@ export class Home extends Component {
     }
 
     render() {
-        const {config: {audio, refAudio, window}, slots, loadAudio, update, add} = this.props;
+        const {config: {audio, refAudio, window}, slots, loadAudio, update, add, expand} = this.props;
 
         if(!refAudio) {
             loadAudio(audio, './A4.mp3');
@@ -81,6 +81,7 @@ export class Home extends Component {
         }
 
         const duration = refAudio.duration;
+        // @todo we can reduce the number of properties sent by grouping ...actions and ...params
         return (
             <div id="entry">
                 <WaveForm id="wave-ref"/>
@@ -92,17 +93,19 @@ export class Home extends Component {
                     window={window}
                 />
                 {
-                    slots.map(({type, params}, i) => {
+                    slots.map(({type, expanded, params}, i) => {
                         if(type === 'osc') {
                             return (
                                 <Oscillator
                                     audio={audio}
                                     slot={i}
                                     key={i}
+                                    expanded={expanded}
                                     frequency={params.frequency}
                                     overtone={params.overtone}
                                     phase={params.phase}
                                     amplitude={params.amplitude}
+                                    expand={expand}
                                     duration={duration}
                                     window={window}
                                     update={update}/>
@@ -136,8 +139,24 @@ export class Home extends Component {
                     duration={duration}
                     window={window}/>
                 <button id="add-waveform"
-                    onClick={() => add({frequency: 440, overtone: 0, phase: 0, amplitude: 0.125})}>
+                    onClick={() => add({
+                        type: 'osc',
+                        frequency: 440,
+                        overtone: 0,
+                        phase: 0,
+                        amplitude: 0.125
+                    })}>
                     Add Oscillator
+                </button>
+                <button id="add-envelope"
+                    onClick={() => add({
+                        type: 'env',
+                        attack: {x: 0.3, y: 1},
+                        decay: {x: 0.4, y: 0.5},
+                        release: {x: 0.9, y: 0.5},
+                        sustain: {x: 1, y: 0}
+                    })}>
+                    Add Envelope
                 </button>
             </div>
 

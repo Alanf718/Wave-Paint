@@ -14,12 +14,14 @@ export class Oscillator extends Component {
     }
 
     displayWaveform() {
-        const {frequency, overtone, amplitude, phase, audio, duration, window} = this.props;
+        const {expanded, frequency, overtone, amplitude, phase, audio, duration, window} = this.props;
 
-        const osc = audio.createOscillator({frequency: frequency * (overtone + 1), amplitude, phase, duration});
-        this.buffer = osc;
-        const display = new Display(this.refs.canvas);
-        display.renderBuffer(osc, window);
+        if(expanded) {
+            const osc = audio.createOscillator({frequency: frequency * (overtone + 1), amplitude, phase, duration});
+            this.buffer = osc;
+            const display = new Display(this.refs.canvas);
+            display.renderBuffer(osc, window);
+        }
     }
 
     componentDidMount() {
@@ -31,60 +33,86 @@ export class Oscillator extends Component {
     }
 
     render() {
-        const {frequency, overtone, amplitude, phase, slot, update} = this.props;
+        const {frequency, overtone, amplitude, phase, expanded, slot, expand, update} = this.props;
 
+        if(expanded) {
+            return (
+                <div className="wave-form oscillator" id={`waveform-${slot}`}>
+                    <div className="menu-bar">
+                        <span className="label">Oscillator</span>
+                        <span className="operation">
+                            <button onClick={() => expand({slot, expanded: false})}>Minimize</button>
+                            <i>+</i>
+                        </span>
+                    </div>
+                    <div>
+                        <canvas width="800" height="150" ref="canvas"/>
+                    </div>
+                    <div className="menu-bar">
+                        <button onClick={() => {
+                            this.playBuffer();
+                        }}>play
+                        </button>
+                        <span>
+                            <input
+                                className="freq"
+                                type="number"
+                                defaultValue={frequency}
+                                onChange={evt => update({slot, frequency: parseFloat(evt.target.value)})}
+                            />
+                            <span>&nbsp;hz</span>
+                        </span>
+                        <span>
+                            <input
+                                className="overtone"
+                                type="number"
+                                defaultValue={overtone}
+                                onChange={evt => update({slot, overtone: parseFloat(evt.target.value)})}
+                            />
+                            <span>overtone</span>
+                        </span>
+                        <span>
+                            <input
+                                className="amplitude"
+                                type="number"
+                                min="0"
+                                max="1"
+                                step=".001"
+                                defaultValue={amplitude}
+                                onChange={evt => update({slot, amplitude: parseFloat(evt.target.value)})}
+                            />
+                            <span>&nbsp;</span>
+                        </span>
+                        <span>
+                            <input
+                                className="phase"
+                                type="number"
+                                min="0"
+                                max="360"
+                                list="common-phase-numbers"
+                                defaultValue={phase}
+                                onChange={evt => update({slot, phase: parseFloat(evt.target.value)})}
+                            />
+                            <span>&nbsp;°</span>
+                        </span>
+                    </div>
+                </div>
+            );
+        }
+
+        /* eslint-disable quotes */
         return (
-            <div className="wave-form oscillator" id={`waveform-${slot}`}>
+            <div className="wave-form oscillator" id={`waveform-${slot}`} style={{width: '800px'}}>
                 <div className="menu-bar">
-                    <span className="label">Oscillator</span>
-                    <span className="operation"><i>+</i></span>
-                </div>
-                <div>
-                    <canvas width="800" height="150" ref="canvas"/>
-                </div>
-                <div className="menu-bar">
-                    <button onClick={() => {this.playBuffer();}}>play</button>
-                    <span>
-                        <input
-                            className="freq"
-                            type="number"
-                            defaultValue={frequency}
-                            onChange={evt=>update({slot, frequency: parseFloat(evt.target.value)})}
-                        />
-                        <span>&nbsp;hz</span>
+                    <span className="label">
+                        <span>Oscillator</span>
+                        <span><b>Frequency:</b> {frequency}hz {overtone > 0 ? ` * ${(overtone + 1)}` : ``}</span>
+                        <span><b>Amp:</b> {amplitude}</span>
+                        <span><b>Phase:</b> {phase}°</span>
                     </span>
-                    <span>
-                        <input
-                            className="overtone"
-                            type="number"
-                            defaultValue={overtone}
-                            onChange={evt=>update({slot, overtone: parseFloat(evt.target.value)})}
-                        />
-                        <span>overtone</span>
-                    </span>
-                    <span>
-                        <input
-                            className="amplitude"
-                            type="number"
-                            min="0"
-                            max="1"
-                            step=".001"
-                            defaultValue={amplitude}
-                            onChange={evt=>update({slot, amplitude: parseFloat(evt.target.value)})}
-                        />
-                        <span>&nbsp;</span>
-                    </span>
-                    <span>
-                        <input
-                            className="phase"
-                            type="number"
-                            min="0"
-                            max="360"
-                            list="common-phase-numbers"
-                            defaultValue={phase}
-                            onChange={evt=>update({slot, phase: parseFloat(evt.target.value)})}
-                        />
-                        <span>&nbsp;°</span>
+                    <span className="operation">
+                        <button onClick={() => expand({slot, expanded: true})}>Expand</button>
+                        <i>+</i>
                     </span>
                 </div>
             </div>

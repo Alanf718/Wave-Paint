@@ -99,14 +99,7 @@ export class Audio {
     /* eslint-disable */
     // @todo make this robust instead of static amplitude
     createEnvelope({duration, attack, decay, release, sustain}) {
-        const {actx} = this;
         let myArrayBuffer = this.createEmpty({duration});
-        const sampleRate = 1 / actx.sampleRate;
-
-        console.log('attack = ', attack);
-        console.log('decay = ', decay);
-        console.log('release = ', release);
-        console.log('sustain = ', sustain);
         for (let channel = 0; channel < myArrayBuffer.numberOfChannels; channel++) {
 
             let nowBuffering = myArrayBuffer.getChannelData(channel);

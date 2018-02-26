@@ -8,10 +8,9 @@ export class Envelope extends Component {
         super(props);
     }
 
-    /*eslint-disable */
     toSvgSpace(envelope) {
-        const width = parseInt(this.refs.svg.getAttribute('width'));
-        const height = parseInt(this.refs.svg.getAttribute('height'));
+        const width = parseInt(this.refs.svg.getAttribute('width'), 10);
+        const height = parseInt(this.refs.svg.getAttribute('height'), 10);
 
         const transformed = envelope.map(point => {
             return {x: point.x * width, y: height * (1 - point.y), name: point.name};
@@ -21,8 +20,8 @@ export class Envelope extends Component {
     }
 
     toNormalSpace(envelope) {
-        const width = parseInt(this.refs.svg.getAttribute('width'));
-        const height = parseInt(this.refs.svg.getAttribute('height'));
+        const width = parseInt(this.refs.svg.getAttribute('width'), 10);
+        const height = parseInt(this.refs.svg.getAttribute('height'), 10);
 
         const transformed = envelope.map(point => {
             return {x: point.x / width, y: (height - point.y) / height, name: point.name};
@@ -32,7 +31,8 @@ export class Envelope extends Component {
     }
 
     drawCurve(points) {
-        const svg = d3.select('svg');
+        const {slot} = this.props;
+        const svg = d3.select(`#waveform-${slot} div svg`);
         const group = svg.select('g.curve');
 
         const fullEnvelope = d3.pairs(points);
@@ -55,11 +55,9 @@ export class Envelope extends Component {
             .attr('stroke', 'black')
             .attr('stroke-width', 1);
 
-
         paths.exit().remove();
     }
 
-    /* eslint-disable */
     displayWaveform() {
         const {attack, decay, release, sustain, update, slot} = this.props;
 
@@ -73,6 +71,7 @@ export class Envelope extends Component {
 
         const points = this.toSvgSpace(envelope);
 
+        /* eslint-disable func-style */
         function dragstarted() {
             d3.select(this).raise().classed('active', true);
         }
@@ -97,8 +96,9 @@ export class Envelope extends Component {
                 sustain: newEnvelope[4]
             });
         }
+        /* eslint-enable func-style */
 
-        const svg = d3.select('svg');
+        const svg = d3.select(`#waveform-${slot} div svg`);
 
         svg.selectAll('circle').remove();
 
@@ -142,8 +142,7 @@ export class Envelope extends Component {
                 </div>
                 <div>
                     <svg width="800" height="150" ref="svg">
-                        <g className="curve">
-                        </g>
+                        <g className="curve"/>
                     </svg>
                 </div>
                 <div className="menu-bar">
