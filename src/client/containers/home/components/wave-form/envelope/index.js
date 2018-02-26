@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-// import {Display} from '../../../../../../wave/display';
 import './style.scss';
-// import * as d3 from 'd3';
 const d3 = require('d3');
 
 export class Envelope extends Component {
@@ -27,7 +25,7 @@ export class Envelope extends Component {
         const height = parseInt(this.refs.svg.getAttribute('height'));
 
         const transformed = envelope.map(point => {
-            return {x: point.x / width, y: height / (1 - point.y), name: point.name};
+            return {x: point.x / width, y: (height - point.y) / height, name: point.name};
         });
 
         return transformed;
@@ -63,7 +61,7 @@ export class Envelope extends Component {
 
     /* eslint-disable */
     displayWaveform() {
-        const {attack, decay, release, sustain, update} = this.props;
+        const {attack, decay, release, sustain, update, slot} = this.props;
 
         const envelope = [
             {x: 0, y: 0, name: 'start'},
@@ -72,6 +70,7 @@ export class Envelope extends Component {
             {...release, name: 'release'},
             {...sustain, name: 'sustain'}
         ];
+
         const points = this.toSvgSpace(envelope);
 
         function dragstarted() {
@@ -80,7 +79,6 @@ export class Envelope extends Component {
 
         const self = this;
         function dragged(d) {
-            // console.log(this, this.getAttribute('name'));
             d3.select(this)
                 .attr('cx', d.x = d3.event.x)
                 .attr('cy', d.y = d3.event.y);
@@ -90,19 +88,29 @@ export class Envelope extends Component {
 
         function dragended() {
             d3.select(this).classed('active', false);
-            console.log(points);
+            const newEnvelope = self.toNormalSpace(points);
+
+            update({slot,
+                attack: newEnvelope[1],
+                decay: newEnvelope[2],
+                release: newEnvelope[3],
+                sustain: newEnvelope[4]
+            });
         }
 
         const svg = d3.select('svg');
 
-        const circles = svg.selectAll('circle')
-            .data(points)
-            .enter()
-            .append('circle');
+        svg.selectAll('circle').remove();
 
-        circles.attr('cx', p => p.x)
+        const circles = svg.selectAll('circle')
+            .data(points);
+
+        circles
+            .enter()
+            .append('circle')
+            .attr('cx', p => p.x)
             .attr('cy', p => p.y)
-            .attr('r', 4)
+            .attr('r', 8)
             .attr('name', p => p.name)
             .call(
                 d3.drag()
@@ -110,6 +118,8 @@ export class Envelope extends Component {
                     .on('drag', dragged)
                     .on('end', dragended)
             );
+
+        circles.exit().remove();
 
         this.drawCurve(points);
     }

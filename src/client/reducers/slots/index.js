@@ -10,7 +10,12 @@ const defaultSlots = [{
     }
 }, {
     type: 'env',
-    params: {}
+    params: {
+        attack: {x: 0.3, y: 1},
+        decay: {x: 0.4, y: 0.5},
+        release: {x: 0.9, y: 0.5},
+        sustain: {x: 1, y: 0}
+    }
 }];
 
 export const slots = (state = defaultSlots, {type, payload} = {}) => {

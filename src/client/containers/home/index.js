@@ -115,10 +115,10 @@ export class Home extends Component {
                                     key={i}
                                     window={window}
                                     update={update}
-                                    attack={{x: 0.3, y: 1}}
-                                    decay={{x: 0.4, y: 0.5}}
-                                    release={{x: 0.9, y: 0.5}}
-                                    sustain={{x: 1, y: 0}}
+                                    attack={params.attack}
+                                    decay={params.decay}
+                                    release={params.release}
+                                    sustain={params.sustain}
                                 />
                             );
                         }

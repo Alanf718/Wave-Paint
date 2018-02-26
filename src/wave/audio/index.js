@@ -103,33 +103,38 @@ export class Audio {
         let myArrayBuffer = this.createEmpty({duration});
         const sampleRate = 1 / actx.sampleRate;
 
+        console.log('attack = ', attack);
+        console.log('decay = ', decay);
+        console.log('release = ', release);
+        console.log('sustain = ', sustain);
         for (let channel = 0; channel < myArrayBuffer.numberOfChannels; channel++) {
 
             let nowBuffering = myArrayBuffer.getChannelData(channel);
             let i = 0;
-            const attackEnd = Math.floor(myArrayBuffer.length * attack);
-            const decayEnd = Math.floor(myArrayBuffer.length * decay);
-            const releaseEnd = Math.floor(myArrayBuffer.length * release);
-            const sustainEnd = Math.floor(myArrayBuffer.length * sustain);
+            const attackEnd = Math.floor(myArrayBuffer.length * attack.x);
+            const decayEnd = Math.floor(myArrayBuffer.length * decay.x);
+            const releaseEnd = Math.floor(myArrayBuffer.length * release.x);
+            const sustainEnd = Math.floor(myArrayBuffer.length * sustain.x);
+
+            let y0 = 0;
             for (; i < attackEnd; i++) {
-                const t = i * sampleRate;
-                // const sample = Math.sin(t * frequency + (phase * PI2 / 360)) * amplitude;
-                nowBuffering[i] = sample;
+                const t = i / attackEnd;
+                nowBuffering[i] = y0 * (1 - t) + attack.y * t;
             }
+            y0 = attack.y;
             for (; i < decayEnd; i++) {
-                const t = i * sampleRate;
-                // const sample = Math.sin(t * frequency + (phase * PI2 / 360)) * amplitude;
-                nowBuffering[i] = sample;
+                const t = (i - attackEnd) / (decayEnd - attackEnd);
+                nowBuffering[i] = y0 * (1 - t) + decay.y * t;
             }
+            y0 = decay.y;
             for (; i < releaseEnd; i++) {
-                const t = i * sampleRate;
-                // const sample = Math.sin(t * frequency + (phase * PI2 / 360)) * amplitude;
-                nowBuffering[i] = sample;
+                const t = (i - decayEnd) / (releaseEnd - decayEnd);
+                nowBuffering[i] = y0 * (1 - t) + release.y * t;
             }
+            y0 = release.y;
             for (; i < sustainEnd; i++) {
-                const t = i * sampleRate;
-                // const sample = Math.sin(t * frequency + (phase * PI2 / 360)) * amplitude;
-                nowBuffering[i] = sample;
+                const t = (i - releaseEnd) / (sustainEnd - releaseEnd);
+                nowBuffering[i] = y0 * (1 - t) + sustain.y * t;
             }
 
         }

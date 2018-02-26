@@ -17,10 +17,17 @@ export class Output extends Component {
         const {audio, duration, slots, window} = this.props;
 
         const output = slots.reduce((acc, slot) => {
-            const {params: {frequency, overtone, phase, amplitude}, type} = slot;
+            const {type} = slot;
             if(type === 'osc') {
+                const {params: {frequency, overtone, phase, amplitude}} = slot;
                 const osc = audio.createOscillator({frequency: frequency * (overtone + 1), amplitude, phase, duration});
                 return audio.sum({buffer1: acc, buffer2: osc});
+            } else if (type === 'env') {
+                /* eslint-disable */
+                const {params: {attack, decay, release, sustain}} = slot;
+                const env = audio.createEnvelope({duration, attack, decay, release, sustain});
+                return audio.product({buffer1: acc, buffer2: env});
+                return acc;
             }
             return acc;
         }, audio.createEmpty({duration}));
