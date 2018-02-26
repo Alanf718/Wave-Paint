@@ -12,7 +12,6 @@ export class WaveForm extends Component {
     }
 
     render() {
-        // const {id} = this.props;
         return (
             <div className="wave-form">
                 Test

@@ -6,6 +6,8 @@ import {ActionCreators as waveActions} from './components/wave-form/actions';
 import {WaveForm} from './components/wave-form';
 import {Oscillator} from './components/wave-form/oscillator';
 import {AudioIn} from './components/wave-form/audio-in';
+import {Output} from './components/wave-form/output';
+import {Envelope} from './components/wave-form/envelope/index';
 import {/*mouse,*/ keys} from 'gocanvas';
 
 import './style.scss';
@@ -66,25 +68,8 @@ export class Home extends Component {
         this.keySubscription.unsubscribe();
     }
 
-    playOutput() {
-        const {config: {audio, refAudio}, slots} = this.props;
-        const duration = refAudio.duration;
-
-        const output = slots.reduce((acc, slot) => {
-            const {params: {frequency, overtone, phase, amplitude}, type} = slot;
-            if(type === 'osc') {
-                const osc = audio.createOscillator({frequency: frequency * (overtone + 1), amplitude, phase, duration});
-                return audio.sum({buffer1: acc, buffer2: osc});
-            }
-            return acc;
-        }, audio.createEmpty({duration}));
-
-        audio.play(output);
-
-    }
-
     render() {
-        const {config: {audio, refAudio, window}, slots, loadAudio, update, add} = this.props;
+        const {config: {audio, refAudio, window}, slots, loadAudio, update, add, expand} = this.props;
 
         if(!refAudio) {
             loadAudio(audio, './A4.mp3');
@@ -96,6 +81,7 @@ export class Home extends Component {
         }
 
         const duration = refAudio.duration;
+        // @todo we can reduce the number of properties sent by grouping ...actions and ...params
         return (
             <div id="entry">
                 <WaveForm id="wave-ref"/>
@@ -107,20 +93,36 @@ export class Home extends Component {
                     window={window}
                 />
                 {
-                    slots.map(({type, params}, i) => {
+                    slots.map(({type, expanded, params}, i) => {
                         if(type === 'osc') {
                             return (
                                 <Oscillator
                                     audio={audio}
                                     slot={i}
                                     key={i}
+                                    expanded={expanded}
                                     frequency={params.frequency}
                                     overtone={params.overtone}
                                     phase={params.phase}
                                     amplitude={params.amplitude}
+                                    expand={expand}
                                     duration={duration}
                                     window={window}
                                     update={update}/>
+                            );
+                        } else if(type === 'env') {
+                            return (
+                                <Envelope
+                                    audio={audio}
+                                    slot={i}
+                                    key={i}
+                                    window={window}
+                                    update={update}
+                                    attack={params.attack}
+                                    decay={params.decay}
+                                    release={params.release}
+                                    sustain={params.sustain}
+                                />
                             );
                         }
 
@@ -131,11 +133,31 @@ export class Home extends Component {
                         );
                     })
                 }
+                <Output
+                    audio={audio}
+                    slots={slots}
+                    duration={duration}
+                    window={window}/>
                 <button id="add-waveform"
-                    onClick={() => add({frequency: 440, overtone: 0, phase: 0, amplitude: 0.125})}>
+                    onClick={() => add({
+                        type: 'osc',
+                        frequency: 440,
+                        overtone: 0,
+                        phase: 0,
+                        amplitude: 0.125
+                    })}>
                     Add Oscillator
                 </button>
-                <button id="play-output" onClick={() => this.playOutput()}>Play Output</button>
+                <button id="add-envelope"
+                    onClick={() => add({
+                        type: 'env',
+                        attack: {x: 0.3, y: 1},
+                        decay: {x: 0.4, y: 0.5},
+                        release: {x: 0.9, y: 0.5},
+                        sustain: {x: 1, y: 0}
+                    })}>
+                    Add Envelope
+                </button>
             </div>
 
         );

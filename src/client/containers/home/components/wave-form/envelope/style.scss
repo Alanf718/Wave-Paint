@@ -1,0 +1,8 @@
+circle:hover {
+  cursor: hand;
+}
+
+circle.active {
+  stroke: red;
+  stroke-width: 2px;
+}
