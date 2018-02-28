@@ -52,7 +52,7 @@ export class Output extends Component {
                     <span className="label">Output</span>
                 </div>
                 <div>
-                    <canvas width="800" height="150" ref="canvas"/>
+                    <canvas width="500" height="150" ref="canvas"/>
                 </div>
                 <div className="menu-bar">
                     <button onClick={() => {this.playBuffer();}}>play</button>

@@ -141,7 +141,7 @@ export class Envelope extends Component {
                     <span className="operation"><i>*</i></span>
                 </div>
                 <div>
-                    <svg width="800" height="150" ref="svg">
+                    <svg width="500" height="150" ref="svg">
                         <g className="curve"/>
                     </svg>
                 </div>
