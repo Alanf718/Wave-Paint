@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import {Audio} from '../../wave/audio';
-import {slots} from './slots';
+import {stacks} from './stacks';
+// import {slots} from './stacks/slots';
 
 /* eslint-disable complexity */
 export const config = (state = {}, {type, payload} = {}) => {
@@ -15,7 +16,6 @@ export const config = (state = {}, {type, payload} = {}) => {
         const audio = new Audio(actx);
         return {audio};
     }
-    // @todo this might make more sense to move to the home reducer
     case 'LOADAUDIO': {
         const {audio} = state;
         return {audio, refAudio: payload, window: {tMin: 0, tMax: payload.duration}};
@@ -30,7 +30,8 @@ export const config = (state = {}, {type, payload} = {}) => {
 
 const rootReducer = combineReducers({
     config,
-    slots
+    // slots,
+    stacks
 });
 
 export default rootReducer;

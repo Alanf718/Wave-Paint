@@ -31,8 +31,8 @@ export class Envelope extends Component {
     }
 
     drawCurve(points) {
-        const {slot} = this.props;
-        const svg = d3.select(`#waveform-${slot} div svg`);
+        const {slot, stack} = this.props;
+        const svg = d3.select(`#waveform-${stack}-${slot} div svg`);
         const group = svg.select('g.curve');
 
         const fullEnvelope = d3.pairs(points);
@@ -59,7 +59,7 @@ export class Envelope extends Component {
     }
 
     displayWaveform() {
-        const {attack, decay, release, sustain, update, slot} = this.props;
+        const {attack, decay, release, sustain, update, slot, stack} = this.props;
 
         const envelope = [
             {x: 0, y: 0, name: 'start'},
@@ -89,7 +89,9 @@ export class Envelope extends Component {
             d3.select(this).classed('active', false);
             const newEnvelope = self.toNormalSpace(points);
 
-            update({slot,
+            update({
+                slot,
+                stack,
                 attack: newEnvelope[1],
                 decay: newEnvelope[2],
                 release: newEnvelope[3],
@@ -98,7 +100,7 @@ export class Envelope extends Component {
         }
         /* eslint-enable func-style */
 
-        const svg = d3.select(`#waveform-${slot} div svg`);
+        const svg = d3.select(`#waveform-${stack}-${slot} div svg`);
 
         svg.selectAll('circle').remove();
 
@@ -133,15 +135,15 @@ export class Envelope extends Component {
     }
 
     render() {
-        const {slot} = this.props;
+        const {stack, slot} = this.props;
         return (
-            <div className="wave-form envelope" id={`waveform-${slot}`}>
+            <div className="wave-form envelope" id={`waveform-${stack}-${slot}`}>
                 <div className="menu-bar">
                     <span className="label">Envelope</span>
                     <span className="operation"><i>*</i></span>
                 </div>
                 <div>
-                    <svg width="800" height="150" ref="svg">
+                    <svg width="500" height="150" ref="svg">
                         <g className="curve"/>
                     </svg>
                 </div>
