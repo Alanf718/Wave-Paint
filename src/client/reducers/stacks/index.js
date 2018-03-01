@@ -34,7 +34,7 @@ export const stacks = (state = defaultStacks, {type, payload} = {}) => {
 
     switch (type) {
     case Actions.ADDSTACK: {
-        return [...currState, []];
+        return [...currState, {slots: []}];
     }
     default:
         return currState;

@@ -14,16 +14,22 @@ export class Stack extends Component {
 
     render() {
         const {stack, slots, audio, duration, window, actions} = this.props;
+
         return (
             <div className="stack" id={`stack-${stack}`}>
                 {
                     this.props.children
                 }
-                <Output
-                    audio={audio}
-                    slots={slots}
-                    duration={duration}
-                    window={window}/>
+                {
+                    this.props.children.length > 0 ?
+                        <Output
+                            audio={audio}
+                            slots={slots}
+                            duration={duration}
+                            window={window}/>
+                        :
+                        <div/>
+                }
                 <button id="add-waveform"
                     onClick={() => actions.add({
                         stack: stack,

@@ -3,8 +3,7 @@ export const Actions = {
 };
 
 export const ActionCreators = {
-    add: ({...rest}) => ({
-        type: Actions.ADDSTACK,
-        payload: {...rest}
+    addStack: () => ({
+        type: Actions.ADDSTACK
     })
 };

@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {ActionCreators as homeActions} from './actions/index';
 import {ActionCreators as waveActions} from './components/wave-form/actions';
+import {ActionCreators as stackActions} from './components/stack/actions';
 import {Stack} from './components/stack';
 import {Oscillator} from './components/wave-form/oscillator';
 import {AudioIn} from './components/wave-form/audio-in';
@@ -69,7 +70,7 @@ export class Home extends Component {
     }
 
     render() {
-        const {config: {audio, refAudio, window}, stacks, loadAudio, update, add, expand} = this.props;
+        const {config: {audio, refAudio, window}, stacks, loadAudio, update, add, expand, addStack} = this.props;
 
         if(!refAudio) {
             loadAudio(audio, './A4.mp3');
@@ -91,6 +92,7 @@ export class Home extends Component {
                     url="./A4.mp3"
                     window={window}
                 />
+                <button onClick={() => addStack()}>Add Stack</button>
                 <div className="stacks">
                     {
                         stacks.map((stack, stackId) => {
@@ -170,6 +172,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => (bindActionCreators({
     ...homeActions,
     ...waveActions,
+    ...stackActions
 }, dispatch));
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
