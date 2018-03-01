@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import {Audio} from '../../wave/audio';
-import {slots} from './slots';
+import {stacks} from './stacks';
+// import {slots} from './stacks/slots';
 
 /* eslint-disable complexity */
 export const config = (state = {}, {type, payload} = {}) => {
@@ -29,7 +30,8 @@ export const config = (state = {}, {type, payload} = {}) => {
 
 const rootReducer = combineReducers({
     config,
-    slots
+    // slots,
+    stacks
 });
 
 export default rootReducer;

@@ -40,7 +40,7 @@ export class AudioIn extends Component {
                     <span className="operation"><i>+</i></span>
                 </div>
                 <div>
-                    <canvas width="500" height="150" ref="canvas"/>
+                    <canvas width="1018" height="150" ref="canvas"/>
                 </div>
                 <div className="menu-bar">
                     <button onClick={() => {this.playBuffer();}}>play</button>

@@ -33,7 +33,7 @@ export class Oscillator extends Component {
     }
 
     render() {
-        const {frequency, overtone, amplitude, phase, expanded, slot, expand, update} = this.props;
+        const {frequency, overtone, amplitude, phase, expanded, slot, stack, expand, update} = this.props;
 
         if(expanded) {
             return (
@@ -41,7 +41,7 @@ export class Oscillator extends Component {
                     <div className="menu-bar">
                         <span className="label">Oscillator</span>
                         <span className="operation">
-                            <button onClick={() => expand({slot, expanded: false})}>Minimize</button>
+                            <button onClick={() => expand({slot, stack, expanded: false})}>Minimize</button>
                             <i>+</i>
                         </span>
                     </div>
@@ -58,7 +58,7 @@ export class Oscillator extends Component {
                                 className="freq"
                                 type="number"
                                 defaultValue={frequency}
-                                onChange={evt => update({slot, frequency: parseFloat(evt.target.value)})}
+                                onChange={evt => update({slot, stack, frequency: parseFloat(evt.target.value)})}
                             />
                             <span>&nbsp;hz</span>
                         </span>
@@ -67,7 +67,7 @@ export class Oscillator extends Component {
                                 className="overtone"
                                 type="number"
                                 defaultValue={overtone}
-                                onChange={evt => update({slot, overtone: parseFloat(evt.target.value)})}
+                                onChange={evt => update({slot, stack, overtone: parseFloat(evt.target.value)})}
                             />
                             <span>overtone</span>
                         </span>
@@ -79,7 +79,7 @@ export class Oscillator extends Component {
                                 max="1"
                                 step=".001"
                                 defaultValue={amplitude}
-                                onChange={evt => update({slot, amplitude: parseFloat(evt.target.value)})}
+                                onChange={evt => update({slot, stack, amplitude: parseFloat(evt.target.value)})}
                             />
                             <span>&nbsp;</span>
                         </span>
@@ -91,7 +91,7 @@ export class Oscillator extends Component {
                                 max="360"
                                 list="common-phase-numbers"
                                 defaultValue={phase}
-                                onChange={evt => update({slot, phase: parseFloat(evt.target.value)})}
+                                onChange={evt => update({slot, stack, phase: parseFloat(evt.target.value)})}
                             />
                             <span>&nbsp;°</span>
                         </span>

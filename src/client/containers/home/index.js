@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {ActionCreators as homeActions} from './actions/index';
 import {ActionCreators as waveActions} from './components/wave-form/actions';
-import {WaveForm} from './components/wave-form';
+import {Stack} from './components/stack';
 import {Oscillator} from './components/wave-form/oscillator';
 import {AudioIn} from './components/wave-form/audio-in';
 import {Output} from './components/wave-form/output';
@@ -69,7 +69,7 @@ export class Home extends Component {
     }
 
     render() {
-        const {config: {audio, refAudio, window}, slots, loadAudio, update, add, expand} = this.props;
+        const {config: {audio, refAudio, window}, stacks, loadAudio, update, add, expand} = this.props;
 
         if(!refAudio) {
             loadAudio(audio, './A4.mp3');
@@ -84,7 +84,6 @@ export class Home extends Component {
         // @todo we can reduce the number of properties sent by grouping ...actions and ...params
         return (
             <div id="entry">
-                <WaveForm id="wave-ref"/>
                 <AudioIn
                     audio={audio}
                     id="waveform-ref"
@@ -92,72 +91,72 @@ export class Home extends Component {
                     url="./A4.mp3"
                     window={window}
                 />
-                {
-                    slots.map(({type, expanded, params}, i) => {
-                        if(type === 'osc') {
+                <div className="stacks">
+                    {
+                        stacks.map((stack, stackId) => {
+                            const {slots} = stack;
                             return (
-                                <Oscillator
+                                <Stack stack={stackId}
+                                    window={window}
                                     audio={audio}
-                                    slot={i}
-                                    key={i}
-                                    expanded={expanded}
-                                    frequency={params.frequency}
-                                    overtone={params.overtone}
-                                    phase={params.phase}
-                                    amplitude={params.amplitude}
-                                    expand={expand}
                                     duration={duration}
-                                    window={window}
-                                    update={update}/>
-                            );
-                        } else if(type === 'env') {
-                            return (
-                                <Envelope
-                                    audio={audio}
-                                    slot={i}
-                                    key={i}
-                                    window={window}
-                                    update={update}
-                                    attack={params.attack}
-                                    decay={params.decay}
-                                    release={params.release}
-                                    sustain={params.sustain}
-                                />
-                            );
-                        }
+                                    slots={slots}
+                                    key={stackId}
+                                    actions={{add}}>
+                                    {
+                                        slots.map(({type, expanded, params}, i) => {
+                                            if (type === 'osc') {
+                                                return (
+                                                    <Oscillator
+                                                        audio={audio}
+                                                        stack={stackId}
+                                                        slot={i}
+                                                        key={i}
+                                                        expanded={expanded}
+                                                        frequency={params.frequency}
+                                                        overtone={params.overtone}
+                                                        phase={params.phase}
+                                                        amplitude={params.amplitude}
+                                                        expand={expand}
+                                                        duration={duration}
+                                                        window={window}
+                                                        update={update}/>
+                                                );
+                                            } else if (type === 'env') {
+                                                return (
+                                                    <Envelope
+                                                        audio={audio}
+                                                        stack={stackId}
+                                                        slot={i}
+                                                        key={i}
+                                                        window={window}
+                                                        update={update}
+                                                        attack={params.attack}
+                                                        decay={params.decay}
+                                                        release={params.release}
+                                                        sustain={params.sustain}
+                                                    />
+                                                );
+                                            }
 
-                        return (
-                            <div>
-                                Unknown Slot Type
-                            </div>
-                        );
-                    })
-                }
+                                            return (
+                                                <div>
+                                                    Unknown Slot Type
+                                                </div>
+                                            );
+                                        })
+                                    }
+                                </Stack>
+                            );
+                        })
+                    }
+                </div>
                 <Output
                     audio={audio}
-                    slots={slots}
+                    slots={stacks.map(stack => stack.slots)}
                     duration={duration}
+                    width={1018}
                     window={window}/>
-                <button id="add-waveform"
-                    onClick={() => add({
-                        type: 'osc',
-                        frequency: 440,
-                        overtone: 0,
-                        phase: 0,
-                        amplitude: 0.125
-                    })}>
-                    Add Oscillator
-                </button>
-                <button id="add-envelope"
-                    onClick={() => add({
-                        type: 'env',
-                        attack: {x: 0.3, y: 1},
-                        decay: {x: 0.4, y: 0.5},
-                        release: {x: 0.9, y: 0.5},
-                        sustain: {x: 1, y: 0}
-                    })}>
-                    Add Envelope
-                </button>
             </div>
 
         );
